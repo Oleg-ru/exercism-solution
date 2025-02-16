@@ -1,71 +1,65 @@
 function Size(width = 80, height = 60) {
-    this.width = width;
-    this.height = height;
-    Size.prototype.resize = function(newWidth, newHeight) {
-        this.width = newWidth;
-        this.height = newHeight;
-    }
+  this.width = width;
+  this.height = height;
+  Size.prototype.resize = function (newWidth, newHeight) {
+    this.width = newWidth;
+    this.height = newHeight;
+  };
 }
 
-
 function Position(x = 0, y = 0) {
-    this.x = x;
-    this.y = y;
-    Position.prototype.move = function (newX, newY) {
-        this.x = newX;
-        this.y = newY;
-    }
+  this.x = x;
+  this.y = y;
+  Position.prototype.move = function (newX, newY) {
+    this.x = newX;
+    this.y = newY;
+  };
 }
 
 class ProgramWindow {
-    constructor() {
-        this.screenSize = new Size(800, 600);
-        this.size = new Size();
-        this.position = new Position();
-    }
-    resize(newSize) {
-        if (newSize.width <= 0) {
-            this.size.width = 1;
-        }
-        if (newSize.height <= 0) {
-            this.size.height = 1;
-        }
-        if (newSize.height > this.screenSize.height) {
-            this.size.height = this.screenSize.height;
-        }
-        if (newSize.width > this.screenSize.width) {
-            this.size.width = this.screenSize.width;
-        }
-        if (newSize.height > 1 && newSize.height < this.screenSize.height) {
-            this.size.height = newSize.height;
-        }
-        if (newSize.width > 1 && newSize.width < this.screenSize.width) {
-            this.size.width = newSize.width;
-        }
-    }
+  constructor() {
+    this.screenSize = new Size(800, 600);
+    this.size = new Size();
+    this.position = new Position();
+  }
+  resize(newSize) {
+    // Минимальный размер
+    const minWidth = 1;
+    const minHeight = 1;
 
-    move(position) {
-        if (position.x < 0) {
-            this.position.x = 0;
-        }
-        if (position.y < 0) {
-            this.position.y = 0;
-        }
-        if (position.x > this.screenSize.height) {
-            this.position.x = this.screenSize.height - this.size.height;
-        }
-        if (position.y > this.screenSize.width) {
-            this.position.y = this.screenSize.width - this.size.width;
-        }
-        if (position.x > 1 && position.x < this.screenSize.height) {
-            this.position.x = position.x;
-        }
-        if (position.y > 1 && position.y < this.screenSize.width) {
-            this.position.y = position.y;
-        }
+    // Вычисляем максимальный допустимый размер на основе текущей позиции
+    const maxWidth = this.screenSize.width - this.position.x;
+    const maxHeight = this.screenSize.height - this.position.y;
 
-    }
+    // Ограничиваем размер окна
+    this.size.width = Math.max(minWidth, Math.min(newSize.width, maxWidth));
+    this.size.height = Math.max(minHeight, Math.min(newSize.height, maxHeight));
+  }
+  move(position) {
+    this.position.x = Math.max(
+      0,
+      Math.min(position.x, this.screenSize.width - this.size.width)
+    );
+    this.position.y = Math.max(
+      0,
+      Math.min(position.y, this.screenSize.height - this.size.height)
+    );
+  }  
 }
+function changeWindow(programWindow) {
+    programWindow.size.width = 400;
+    programWindow.size.height = 300;
+    programWindow.position.x = 100;
+    programWindow.position.y = 150;
+    return programWindow;
+  }
+
+
+const programWindow = new ProgramWindow();
+const updatedWindow = changeWindow(programWindow);
+
+console.log(updatedWindow.size.width);
+console.log(updatedWindow.size.height);
 
 //const size = new Size(1080, 764);
 //const point = new Position();
@@ -79,10 +73,11 @@ class ProgramWindow {
 // // => 600
 // console.log(programWindow.size.height);;
 // // => 400
-const programWindow = new ProgramWindow();
-const newSize = new Size(100, 100);
-programWindow.resize(newSize);
-const newPosition = new Position(750, 650);
-programWindow.move(newPosition);
-console.log(programWindow.position.x)
-console.log(programWindow.position.y)
+// const programWindow = new ProgramWindow();
+// const newSize = new Size(100, 100);
+// programWindow.resize(newSize);
+// const newPosition = new Position(750, 650);
+// programWindow.move(newPosition);
+// console.log(programWindow.position.x)
+// console.log(programWindow.position.y)
+
